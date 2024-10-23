@@ -1,0 +1,69 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import csv
+from datetime import datetime
+class expenseTracker:
+  def __init__(self,filename = 'expenses.csv'):
+    self.filename = filename
+    self.expenses = self.load_expenses()
+  def load_expenses(self):
+    try:
+      return pd.read_csv(self.filename,parse_dates=['Date'])
+    except FileNotFoundError:
+      return pd.DataFrame(columns=['Amount','Category','Date','Description'])
+  def save_expenses(self):
+    self.expenses.to_csv(self,filename,index=False)
+  def add_expenses(self,amount,category,Date,Description):
+    new_expenses = {'Amount':amount,'category':category,'Date':Date,'Description':Description}
+    self.expenses = self.expenses.append(new_expenses,ignore_index =True)
+    self.save_expenses()
+  def view_expenses(self):
+    print(Self.expenses)
+  def summary_stats(self):
+    print("Total Expenses:",self.expenses['Amount'].sum())
+    print("Average Expenses per category:")
+    print(self.expenses.groupby('category')['Amount'].mean())
+  def plot_expenses(self):
+    self.expenses.groupby('category')['Amount'].sum().plot(kind='bar')
+    plt.title('Expenses by category')
+    plt.xlabel('category')
+    plt.ylabel('Total Amount')
+    plt.show()
+
+    self.expenses.groupby('Date')['Amount'].sum().plot(kind = "Line")
+    plt.title('Expenses by Date')
+    plt.xlabel('Date')
+    plt.ylabel('Total Amount')
+    plt.show()
+
+def main():
+  tracker = expenseTracker()
+  while True:
+    print("\n expensetracker menu")
+    print("1.add expenses")
+    print("2.view expenses")
+    print("3. summary stats")
+    print("4.plot expenses")
+    print("5 exit")
+
+    choice = input("choose an option:")
+    if choice == '1':
+      amount = float(input("Enter the amount:"))
+      category = input("Enter the category:")
+      date = input("Enter date(yyyy-mm-dd)")
+      escription = input("Enter the description:")
+      date = datetime.strptime(date,'%y-%m-%d')
+      tracker.add_expenses(amount,category,dtae,description)
+    elif choice == '2':
+      tracker.view_expenses()
+    elif choice == '3':
+      tracker.summary_stats()
+    elif choice == '4':
+      tracker.plot_expenses()
+    elif chioce == '5':
+      break
+    else:
+      print("invalid choice.please try again.")
+if __name__ == "__main__":
+  main()
